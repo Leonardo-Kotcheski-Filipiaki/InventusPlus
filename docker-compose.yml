@@ -1,0 +1,17 @@
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql_inventus
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: inventus
+      MYSQL_USER: leonardo
+      MYSQL_PASSWORD: 15121512
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+
