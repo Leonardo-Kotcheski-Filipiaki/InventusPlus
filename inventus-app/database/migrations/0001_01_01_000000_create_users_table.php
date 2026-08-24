@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,21 +12,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('person', function (Blueprint $table) {
+        Schema::create('intra_person', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable(false);
             $table->string('cpf')->nullable(true)->unique();
-            $table->string('cnpj')->nullable(true)->unique();
-            $table->date('birthdate')->nullable();
-            $table->string('phone')->nullable();
+            $table->date('birthdate')->nullable(true);
+            $table->string('email')->nullable(true);
+            $table->string('phone')->nullable(true);
             $table->timestamps();
         });
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('person_id')->nullable()->constrained('person')->onDelete('cascade');
+            $table->foreignId('intra_person_id')->nullable()->constrained('intra_person')->onDelete('cascade');
             $table->string('login');
-            $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
@@ -39,6 +39,8 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        User::factory()->make();
     }
 
     /**
@@ -46,8 +48,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('person');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('intra_person');
     }
 };

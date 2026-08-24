@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use Attribute;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int id
@@ -13,20 +16,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property string updated_at
  */
 #[Table('costumer')]
+#[Fillable('person_id', 'address_id')]
 class Costumer extends Model
 {
-    protected $fillable = [
-        'person_id',
-        'address_id',
-    ];
-
-    public function person()
+    public function person() : HasOne
     {
-        return $this->belongsTo(Person::class);
+        return $this->hasOne(Person::class, 'id', 'person_id');
     }
 
-    public function address()
+    public function address() : HasOne
     {
-        return $this->belongsTo(Address::class);
+        return $this->hasOne(Address::class, 'id', 'address_id');
     }
 }

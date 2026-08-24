@@ -11,6 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {   
+        Schema::create('person', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable(false);
+            $table->string('cpf')->nullable(true)->unique();
+            $table->string('cnpj')->nullable(true)->unique();
+            $table->date('birthdate')->nullable(true);
+            $table->string('email')->nullable(true);
+            $table->string('phone')->nullable(true);
+            $table->timestamps();
+        });
+
         Schema::create('address', function (Blueprint $table) {
             $table->id();
             $table->string('street');
@@ -45,5 +56,6 @@ return new class extends Migration
         Schema::dropIfExists('costumer');
         Schema::dropIfExists('supplier');
         Schema::dropIfExists('address');
+        Schema::dropIfExists('person');
     }
 };

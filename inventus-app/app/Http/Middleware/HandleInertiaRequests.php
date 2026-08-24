@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Person;
+use App\Models\IntraPerson;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -41,7 +41,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
-                'person' => Person::where('id', $request->user()->person_id)->get('name')->first(),
+                'person' => IntraPerson::where('id', $request->user()->intra_person_id ?? '')->get('name')->first(),
             ],
             'flash' => [
                 'error' => $request->session()->get('error'),

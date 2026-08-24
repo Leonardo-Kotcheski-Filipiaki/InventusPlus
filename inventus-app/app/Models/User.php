@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,7 +14,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
- * @property int|null $person_id
+ * @property int|null $intra_person_id
  * @property string $login
  * @property string $email
  * @property string $password
@@ -19,15 +22,16 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['login', 'person_id', 'email', 'password'])]
+#[Fillable(['login', 'intra_person_id', 'email', 'password'])]
 #[Hidden(['password'])]
+#[UseFactory(UserFactory::class)]
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasFactory;
 
-    public function person(): BelongsTo
+    public function intra_person(): BelongsTo
     {
-        return $this->belongsTo(Person::class);
+        return $this->belongsTo(IntraPerson::class);
     }
 
     /**

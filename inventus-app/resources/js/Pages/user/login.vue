@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { Head, useForm, usePage } from '@inertiajs/vue3';
-import { User } from '@/types';
 import { post } from '@/routes/login';
 import { ref } from 'vue';
-const props = defineProps<{
-    user : User;
-}>()
 
 const page = usePage();
 const form = useForm({
