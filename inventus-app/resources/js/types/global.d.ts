@@ -1,4 +1,4 @@
-import type { Auth } from '@/types/auth';
+import type { Auth, Flash } from '@/types/auth';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
@@ -18,7 +18,9 @@ declare module '@inertiajs/core' {
         sharedPageProps: {
             name: string;
             auth: Auth;
-            sidebarOpen: boolean;
+            flash: Flash;
+            errors: Record<string, string | string[]>;
+            sidebarOpen?: boolean;
             [key: string]: unknown;
         };
     }
@@ -31,3 +33,4 @@ declare module 'vue' {
         $headManager: ReturnType<typeof createHeadManager>;
     }
 }
+

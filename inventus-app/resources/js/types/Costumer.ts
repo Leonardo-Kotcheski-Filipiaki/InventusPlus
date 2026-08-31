@@ -1,6 +1,8 @@
-import { Person } from "./Person";
+import type { Person } from "./Person";
+import type Address from "./AddressType";
 
 export default interface Costumer {
-    id: string,
-    person: Person
+    id: number;
+    person?: Person;
+    address?: Address;
 }

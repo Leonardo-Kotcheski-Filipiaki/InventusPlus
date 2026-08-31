@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\Costumer;
 use App\Models\Person;
 use App\Rules\DocumentRule;
@@ -98,8 +99,11 @@ class CostumerController extends Controller
     {
         DB::transaction(function () use ($costumer) {
             $person = Person::find($costumer->person_id);
-            // [Correção 2]: O filho (Costumer) precisa ser apagado ANTES do pai (Person)
-            $costumer->delete(); 
+            $address = Address::find($costumer->address_id);
+            if ($address) {
+                $address->delete();
+            }
+            $costumer->delete();
             $person->delete();
         });
         session()->flash('success', 'Cliente excluído com sucesso!');

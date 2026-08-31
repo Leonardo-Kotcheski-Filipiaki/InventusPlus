@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
 import costumers from '@/routes/costumers';
@@ -15,68 +15,186 @@ const form = useForm({
 });
 
 const showElement = ref(true);
-
 const page = usePage();
 
 const submit = () => {
-    form.post(costumers.store.url());
-    if (page.props.flash.warning || page.props.errors.error) {
-        showElement.value = true;
-    } else {
-        showElement.value = false;
-    }
-    setTimeout(() => {
-        showElement.value = false;
-    }, 3000)
-}
+    form.post(costumers.store.url(), {
+        onFinish: () => {
+            if (page.props.flash?.warning || page.props.errors?.error) {
+                showElement.value = true;
+                setTimeout(() => {
+                    showElement.value = false;
+                }, 4000);
+            }
+        }
+    });
+};
 </script>
 
-
 <template>
-    <Head title="Costumers" />
-    <Nav />
-    <SubMenu :options="[
-        {
-            label: 'Listar',
-            url: costumers.index()
-        },
-        {
-            label: 'Adicionar',
-            url: costumers.create()
-        }
-    ]"/>
-    <div class="flex justify-center max-w-full mt-10 ">
-        <form class="border border-gray-500 rounded-md p-10" @submit.prevent="submit()" method="post">
-            <h1 class="text-center font-semibold text-2xl">Adicionar Cliente</h1>
-            <div class="flex flex-col gap-5 w-80">
-                <input class="border border-gray-500 rounded-md p-2 focus:border-blue-500" type="text" v-model="form.name" name="name" id="name" placeholder="Nome*" required />
-                <span v-if="form.errors.name" class="text-red-400 text-md font-semibold">
-                    {{ form.errors.name }}
-                </span>
-                <input class="border border-gray-500 rounded-md p-2 focus:border-blue-500" type="text" v-model="form.cpf" name="cpf" id="cpf" placeholder="CPF" />
-                <span v-if="form.errors.cpf" class="text-red-400 text-md font-semibold">
-                    {{ form.errors.cpf }}
-                </span>
-                <input class="border border-gray-500 rounded-md p-2 focus:border-blue-500" type="text" v-model="form.cnpj" name="cnpj" id="cnpj" placeholder="CNPJ" />
-                <span v-if="form.errors.cnpj" class="text-red-400 text-md font-semibold">
-                    {{ form.errors.cnpj }}
-                </span>
-                <input class="border border-gray-500 rounded-md p-2 focus:border-blue-500" type="date" v-model="form.birthdate" name="birthdate" id="birthdate" placeholder="Data de Nascimento*" required />
-                <span v-if="form.errors.birthdate" class="text-red-400 text-md font-semibold">
-                    {{ form.errors.birthdate }}
-                </span>
-                <input class="border border-gray-500 rounded-md p-2 focus:border-blue-500" type="email" v-model="form.email" name="email" id="email" placeholder="Email*" required />
-                <span v-if="form.errors.email" class="text-red-400 text-md font-semibold">
-                    {{ form.errors.email }}
-                </span>
-                <input class="border border-gray-500 rounded-md p-2 focus:border-blue-500" type="tel" v-model="form.phone" name="phone" id="phone" placeholder="Telefone*" required />
-                <span v-if="form.errors.phone" class="text-red-400 text-md font-semibold">
-                    {{ form.errors.phone }}
-                </span>
+    <Head title="Adicionar Cliente - Inventus +" />
+    <div class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
+        <Nav />
+        <SubMenu :options="[
+            {
+                label: 'Listar Clientes',
+                url: costumers.index()
+            }
+        ]"/>
+
+        <main class="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
+            <!-- Breadcrumbs / Top Bar -->
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 class="text-xl font-bold text-white tracking-tight">Cadastrar Novo Cliente</h1>
+                    <p class="text-xs text-zinc-400 mt-0.5">Preencha os dados do cliente</p>
+                </div>
+                <Link
+                    :href="costumers.index()"
+                    class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold rounded-lg border border-zinc-700 transition-colors"
+                >
+                    Voltar
+                </Link>
             </div>
-            <div class="flex justify-center items-center w-80 mt-5">
-                <button class="w-[50%] border border-gray-500 rounded-md p-2 hover:bg-gray-600 hover:text-white transition-colors cursor-pointer" type="submit">Salvar</button>
+
+            <!-- Form Card -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 sm:p-8 shadow-sm">
+                <!-- Warnings / Errors -->
+                <div
+                    v-if="page.props.flash?.warning && showElement"
+                    class="mb-6 p-3 rounded-lg bg-amber-950/50 border border-amber-800/80 text-amber-200 text-sm"
+                >
+                    {{ page.props.flash.warning }}
+                </div>
+
+                <form @submit.prevent="submit()" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Nome -->
+                        <div class="md:col-span-2">
+                            <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                                Nome Completo <span class="text-indigo-400">*</span>
+                            </label>
+                            <input
+                                id="name"
+                                v-model="form.name"
+                                type="text"
+                                required
+                                placeholder="Ex: João da Silva"
+                                class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                            />
+                            <span v-if="form.errors.name" class="block mt-1 text-xs text-rose-400">
+                                {{ form.errors.name }}
+                            </span>
+                        </div>
+
+                        <!-- CPF -->
+                        <div>
+                            <label for="cpf" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                                CPF
+                            </label>
+                            <input
+                                id="cpf"
+                                v-model="form.cpf"
+                                type="text"
+                                placeholder="000.000.000-00"
+                                class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                            />
+                            <span v-if="form.errors.cpf" class="block mt-1 text-xs text-rose-400">
+                                {{ form.errors.cpf }}
+                            </span>
+                        </div>
+
+                        <!-- CNPJ -->
+                        <div>
+                            <label for="cnpj" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                                CNPJ
+                            </label>
+                            <input
+                                id="cnpj"
+                                v-model="form.cnpj"
+                                type="text"
+                                placeholder="00.000.000/0000-00"
+                                class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                            />
+                            <span v-if="form.errors.cnpj" class="block mt-1 text-xs text-rose-400">
+                                {{ form.errors.cnpj }}
+                            </span>
+                        </div>
+
+                        <!-- Data de Nascimento -->
+                        <div>
+                            <label for="birthdate" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                                Data de Nascimento <span class="text-indigo-400">*</span>
+                            </label>
+                            <input
+                                id="birthdate"
+                                v-model="form.birthdate"
+                                type="date"
+                                required
+                                class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors [color-scheme:dark]"
+                            />
+                            <span v-if="form.errors.birthdate" class="block mt-1 text-xs text-rose-400">
+                                {{ form.errors.birthdate }}
+                            </span>
+                        </div>
+
+                        <!-- Telefone -->
+                        <div>
+                            <label for="phone" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                                Telefone <span class="text-indigo-400">*</span>
+                            </label>
+                            <input
+                                id="phone"
+                                v-model="form.phone"
+                                type="tel"
+                                required
+                                placeholder="(00) 00000-0000"
+                                class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                            />
+                            <span v-if="form.errors.phone" class="block mt-1 text-xs text-rose-400">
+                                {{ form.errors.phone }}
+                            </span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="md:col-span-2">
+                            <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                                Email <span class="text-indigo-400">*</span>
+                            </label>
+                            <input
+                                id="email"
+                                v-model="form.email"
+                                type="email"
+                                required
+                                placeholder="cliente@email.com"
+                                class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                            />
+                            <span v-if="form.errors.email" class="block mt-1 text-xs text-rose-400">
+                                {{ form.errors.email }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-zinc-800">
+                        <Link
+                            :href="costumers.index()"
+                            class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-semibold rounded-lg border border-zinc-700 transition-colors"
+                        >
+                            Cancelar
+                        </Link>
+                        <button
+                            type="submit"
+                            :disabled="form.processing"
+                            class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
+                        >
+                            <span v-if="form.processing">Salvando...</span>
+                            <span v-else>Salvar Cliente</span>
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </main>
     </div>
 </template>
+
