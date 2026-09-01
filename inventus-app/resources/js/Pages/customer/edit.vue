@@ -1,24 +1,33 @@
 <script setup lang="ts">
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
-import costumers from '@/routes/costumers';
-import { ref } from 'vue';
+import address from '@/routes/address';
+import customers from '@/routes/customers';
+
+const props = defineProps({
+    costumer: {
+        type: Object,
+        required: true
+    }
+});
 
 const form = useForm({
-    name: '',
-    cpf: '',
-    cnpj: '',
-    birthdate: '',
-    email: '',
-    phone: ''
+    name: props.costumer.person?.name || '',
+    cpf: props.costumer.person?.cpf || '',
+    cnpj: props.costumer.person?.cnpj || '',
+    birthdate: props.costumer.person?.birthdate || '',
+    email: props.costumer.person?.email || '',
+    phone: props.costumer.person?.phone || ''
 });
 
 const showElement = ref(true);
 const page = usePage();
 
 const submit = () => {
-    form.post(costumers.store.url(), {
+    form.patch(customers.update.url(props.costumer.id), {
+        preserveState: true,
         onFinish: () => {
             if (page.props.flash?.warning || page.props.errors?.error) {
                 showElement.value = true;
@@ -32,13 +41,17 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Adicionar Cliente - Inventus +" />
+    <Head title="Alterar Cliente - Inventus +" />
     <div class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
         <Nav />
         <SubMenu :options="[
             {
                 label: 'Listar Clientes',
-                url: costumers.index()
+                url: customers.index()
+            },
+            {
+                label: 'Novo Cliente',
+                url: customers.create()
             }
         ]"/>
 
@@ -46,11 +59,11 @@ const submit = () => {
             <!-- Breadcrumbs / Top Bar -->
             <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h1 class="text-xl font-bold text-white tracking-tight">Cadastrar Novo Cliente</h1>
-                    <p class="text-xs text-zinc-400 mt-0.5">Preencha os dados do cliente</p>
+                    <h1 class="text-xl font-bold text-white tracking-tight">Editar Cliente</h1>
+                    <p class="text-xs text-zinc-400 mt-0.5">Atualize os dados de {{ form.name || 'cliente' }}</p>
                 </div>
                 <Link
-                    :href="costumers.index()"
+                    :href="customers.index()"
                     class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold rounded-lg border border-zinc-700 transition-colors"
                 >
                     Voltar
@@ -176,21 +189,33 @@ const submit = () => {
                     </div>
 
                     <!-- Action buttons -->
-                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-zinc-800">
-                        <Link
-                            :href="costumers.index()"
-                            class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-semibold rounded-lg border border-zinc-700 transition-colors"
-                        >
-                            Cancelar
-                        </Link>
-                        <button
-                            type="submit"
-                            :disabled="form.processing"
-                            class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
-                        >
-                            <span v-if="form.processing">Salvando...</span>
-                            <span v-else>Salvar Cliente</span>
-                        </button>
+                     
+                    <div class="flex items-center justify-between pt-4 border-t border-zinc-800">
+                        <div>
+                            <Link
+                                :href="address.create(props.costumer.id)"
+                                class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-semibold rounded-lg border border-zinc-700 transition-colors"
+                            >
+                                Adicionar Endereço
+                            </Link>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <Link
+                                :href="customers.index()"
+                                class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-semibold rounded-lg border border-zinc-700 transition-colors"
+                            >
+                                Cancelar
+                            </Link>
+                            <button
+                                type="submit"
+                                :disabled="form.processing"
+                                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
+                            >
+                                <span v-if="form.processing">Atualizando...</span>
+                                <span v-else>Atualizar Cliente</span>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>

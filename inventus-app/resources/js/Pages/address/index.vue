@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { Head, Link, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
 import type AddressType from '@/types/AddressType';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
 import address from '@/routes/address';
-import costumers from '@/routes/costumers';
+import customers from '@/routes/customers';
 
 const props = defineProps<{
-    addressArray?: AddressType[];
+    addressArray: AddressType[] | [];
 }>();
 
 </script>
@@ -20,7 +19,7 @@ const props = defineProps<{
         <SubMenu :options="[
             {
                 label: 'Voltar',
-                url: costumers.index()
+                url: customers.index()
             }
         ]"/>
         <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
@@ -50,7 +49,7 @@ const props = defineProps<{
                     </thead>
                     <tbody>
                         <tr v-for="addressArray in props.addressArray" :key="addressArray.id">
-                            <td class="py-2 text-sm">{{ addressArray.costumer.person.name }}</td>
+                            <td class="py-2 text-sm">{{ addressArray.customer?.person?.name ?? 'Não vinculado' }}</td>
                             <td class="py-2 text-sm">{{ addressArray.zip_code }}</td>
                             <td class="py-2 text-sm">{{ addressArray.street }}</td>
                             <td class="py-2 text-sm">{{ addressArray.number }}</td>

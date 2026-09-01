@@ -15,9 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string created_at
  * @property string updated_at
  */
-#[Table('costumer')]
+#[Table('customer')]
 #[Fillable('person_id', 'address_id')]
-class Costumer extends Model
+class Customer extends Model
 {
     public function person() : HasOne
     {

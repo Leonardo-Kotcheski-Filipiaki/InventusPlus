@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import type Customer from '@/types/Customer';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
-import costumers from '@/routes/costumers';
-import type Costumer from '@/types/Costumer';
-import { ref } from 'vue';
 import address from '@/routes/address';
+import customers from '@/routes/customers';
 
 const page = usePage();
 
 defineProps<{
-    costumer: Costumer[];
+    customer: Customer[];
 }>();
 
 const show = ref(true);
@@ -29,7 +29,7 @@ if (page.props.flash?.success || page.props.flash?.error) {
         <SubMenu :options="[
             {
                 label: 'Novo Cliente',
-                url: costumers.create()
+                url: customers.create()
             },
             {
                 label: 'Listar Endereços',
@@ -45,7 +45,7 @@ if (page.props.flash?.success || page.props.flash?.error) {
                     <p class="text-sm text-zinc-200 mt-0.5">Gerenciamento de clientes cadastrados</p>
                 </div>
                 <Link
-                    :href="costumers.create()"
+                    :href="customers.create()"
                     class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors"
                 >
                     <span>+</span>
@@ -93,41 +93,41 @@ if (page.props.flash?.success || page.props.flash?.error) {
                         </thead>
                         <tbody class="divide-y divide-zinc-800/80 font-normal">
                             <tr
-                                v-for="cost in costumer"
-                                :key="cost.id"
+                                v-for="cust in customer"
+                                :key="cust.id"
                                 class="hover:bg-zinc-800/50 transition-colors"
                             >
                                 <td class="py-3.5 px-4 font-medium text-white">
-                                    {{ cost.person.name }}
+                                    {{ cust.person.name }}
                                 </td>
                                 <td class="py-3.5 px-4 text-center">
-                                    <span v-if="cost.person.cpf && cost.person.cnpj" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
-                                        CPF: {{ cost.person.cpf }} | CNPJ: {{ cost.person.cnpj }}
+                                    <span v-if="cust.person.cpf && cust.person.cnpj" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
+                                        CPF: {{ cust.person.cpf }} | CNPJ: {{ cust.person.cnpj }}
                                     </span>
-                                    <span v-else-if="cost.person.cpf" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
-                                        CPF: {{ cost.person.cpf }}
+                                    <span v-else-if="cust.person.cpf" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
+                                        CPF: {{ cust.person.cpf }}
                                     </span>
-                                    <span v-else-if="cost.person.cnpj" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
-                                        CNPJ: {{ cost.person.cnpj }}
+                                    <span v-else-if="cust.person.cnpj" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
+                                        CNPJ: {{ cust.person.cnpj }}
                                     </span>
                                     <span v-else class="text-zinc-600">—</span>
                                 </td>
                                 <td class="py-3.5 px-4 text-zinc-300">
-                                    {{ cost.person.phone || '—' }}
+                                    {{ cust.person.phone || '—' }}
                                 </td>
                                 <td class="py-3.5 px-4 text-zinc-300">
-                                    {{ cost.person.email || '—' }}
+                                    {{ cust.person.email || '—' }}
                                 </td>
                                 <td class="py-3.5 px-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <Link
-                                            :href="costumers.edit(cost.id)"
+                                            :href="customers.edit(cust.id)"
                                             class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 border border-zinc-700 text-zinc-200 hover:text-white text-xs font-medium rounded transition-colors"
                                         >
                                             Editar
                                         </Link>
                                         <Link
-                                            :href="costumers.destroy(cost.id)"
+                                            :href="customers.destroy(cust.id)"
                                             class="px-2.5 py-1 bg-rose-950/40 hover:bg-rose-900/60 active:bg-rose-800/70 border border-rose-800/60 text-rose-300 hover:text-rose-100 text-xs font-medium rounded transition-colors"
                                         >
                                             Excluir
@@ -135,7 +135,7 @@ if (page.props.flash?.success || page.props.flash?.error) {
                                     </div>
                                 </td>
                             </tr>
-                            <tr v-if="!costumer || costumer.length === 0">
+                            <tr v-if="!customer || customer.length === 0">
                                 <td colspan="5" class="py-12 text-center text-zinc-500">
                                     Nenhum cliente cadastrado ainda.
                                 </td>

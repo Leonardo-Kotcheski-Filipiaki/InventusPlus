@@ -41,7 +41,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
-                'person' => IntraPerson::where('id', $request->user()->intra_person_id ?? '')->get('name')->first(),
+                'person' => $request->user()?->loadMissing('intra_person')?->intra_person,
             ],
             'flash' => [
                 'error' => $request->session()->get('error'),

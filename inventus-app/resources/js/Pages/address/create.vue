@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import type Costumer from '@/types/Costumer';
+import type Costumer from '@/types/Customer';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
 import address from '@/routes/address';

@@ -34,7 +34,7 @@ return new class extends Migration
             $table->timestamps();
         });
         
-        Schema::create('costumer', function (Blueprint $table) {
+        Schema::create('customer', function (Blueprint $table) {
             $table->id();
             $table->foreignId('person_id')->nullable(false)->constrained('person')->onDelete('cascade');
             $table->foreignId('address_id')->nullable(true)->constrained('address')->onDelete('cascade');
@@ -54,7 +54,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('costumer');
+        Schema::dropIfExists('customer');
         Schema::dropIfExists('supplier');
         Schema::dropIfExists('address');
         Schema::dropIfExists('person');

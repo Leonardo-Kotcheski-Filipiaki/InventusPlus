@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Costumer;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\Address;
 use Illuminate\Support\Facades\DB;
@@ -14,9 +14,7 @@ class AddressController extends Controller
     public function index()
     {
         //Get costumer name that belongs to Person model
-        $addresses = Address::all()->each(function ($address) {
-            $address->costumer = Costumer::where('address_id', $address->id)->with('person:id,name')->get()->first();
-        });
+        $addresses = Address::with("customer.person")->get();
         return Inertia::render("address/index", [
             "addressArray" => $addresses ?? []
         ]);
@@ -24,24 +22,25 @@ class AddressController extends Controller
 
     public function create(int $id)
     {
-        //need an Costumer object with person->name column and costumer id
-        $costumer = Costumer::with('person:id,name')->find($id);
-        if ($costumer == null) {
-            return redirect()->route("costumers.edit", $id)->with("error", "Cliente não encontrado");
+        //need an Customer object with person->name column and customer id
+        $customer = Customer::with('person:id,name')->find($id);
+        if ($customer == null) {
+            return redirect()->route("customer.edit", $id)->with("error", "Cliente não encontrado");
         }
         return Inertia::render('address/create', [
-            'costumer' => $costumer
+            'customer' => $customer
         ]);
     }
 
     public function store(Request $request, int $id) 
     {
-        $costumer = Costumer::find($id);
-        if ($costumer == null) {
-            return redirect()->route("costumers.index")->with("error", "Cliente não encontrado");
+        $customer = Customer::find($id);
+        if ($customer == null) {
+            return redirect()->route("customer.index")->with("error", "Cliente não encontrado");
         }
-        $request->zip_code = str_replace('-', '', $request->zip_code);
-        $request->zip_code = substr($request->zip_code, 0, 5) . '-' . substr($request->zip_code, 5);
+
+        $request->merge(['zip_code' => str_replace('-', '', $request->zip_code)]);
+        $request->merge(['zip_code' => substr($request->zip_code, 0, 5) . '-' . substr($request->zip_code, 5)]);
 
         $request->validate([
             "street" => "required", 
@@ -62,18 +61,18 @@ class AddressController extends Controller
             "zip_code.max"=>"CEP inválido",
         ]);
 
-        DB::transaction(function () use ($request, $costumer) {
+        DB::transaction(function () use ($request, $customer) {
             $address = Address::create($request->all());
-            $ok = $costumer->update(['address_id' => $address->id]);
+            $ok = $customer->update(['address_id' => $address->id]);
             if (!$ok) {
                 DB::rollBack();
                 session()->flash("error", "Address not created");
-                return redirect()->route("costumers.edit", $costumer->id);
+                return redirect()->route("customer.edit", $customer->id);
             }
             DB::commit();
         });
 
-        return redirect()->route("costumers.edit", $costumer->id)->with("success", "Address created successfully");
+        return redirect()->route("customer.edit", $customer->id)->with("success", "Address created successfully");
     }
 
     public function edit(int $id) 
@@ -82,7 +81,7 @@ class AddressController extends Controller
         if ($address == null) {
             return redirect()->route("address.index")->with("error", "Endereço não encontrado");
         }
-        $address->costumer = Costumer::where('address_id', $address->id)->with('person:id,name')->first();
+        $address->customer = Customer::where('address_id', $address->id)->with('person:id,name')->first();
 
         return Inertia::render("address/edit", [
             "address" => $address
@@ -96,8 +95,8 @@ class AddressController extends Controller
             return redirect()->route("address.index")->with("error", "Endereço não encontrado");
         }
 
-        $request->zip_code = str_replace('-', '', $request->zip_code);
-        $request->zip_code = substr($request->zip_code, 0, 5) . '-' . substr($request->zip_code, 5);
+        $request->merge(['zip_code' => str_replace('-', '', $request->zip_code)]);
+        $request->merge(['zip_code' => substr($request->zip_code, 0, 5) . '-' . substr($request->zip_code, 5)]);
 
         $request->validate([
             "street" => "required", 

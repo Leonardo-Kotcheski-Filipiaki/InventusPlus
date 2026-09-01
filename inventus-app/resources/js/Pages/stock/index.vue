@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
-import { ref } from 'vue';
 
 const page = usePage();
 

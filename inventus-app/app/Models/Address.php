@@ -23,8 +23,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Address extends Model
 {
     //Address have a address_id in Costumer table, how to define a relationship where Adress table have the foreign key?
-    public function costumer() : BelongsTo
+    public function customer() : BelongsTo
     {
-        return $this->belongsTo(Costumer::class, 'address_id', 'id');
+        return $this->belongsTo(Customer::class, 'address_id', 'id');
     }
 }

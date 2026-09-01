@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddressController;
-use App\Http\Controllers\CostumerController;
+use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\UserController;
@@ -16,7 +16,7 @@ Route::middleware('auth')->group(function () {
     
 
 
-    Route::resource("costumers", CostumerController::class);
+    Route::resource("customers", CustomerController::class);
 
     Route::get("/address", [AddressController::class, "index"])->name("address.index");
     Route::get("/address/create/{id}", [AddressController::class, "create"])->name("address.create");

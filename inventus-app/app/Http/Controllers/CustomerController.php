@@ -3,25 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
-use App\Models\Costumer;
+use App\Models\Customer;
 use App\Models\Person;
 use App\Rules\DocumentRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class CostumerController extends Controller
+class CustomerController extends Controller
 {
     public function index()
     {  
-        return Inertia::render('costumer/index', [
-            'costumer' => Costumer::with('person')->get()->all()
+        return Inertia::render('customer/index', [
+            'customer' => Customer::with('person')->get()->all()
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('costumer/create');
+        return Inertia::render('customer/create');
     }
 
     public function store(Request $request)
@@ -54,20 +54,20 @@ class CostumerController extends Controller
 
         DB::transaction(function () use ($request) {
             $person = Person::create($request->all());
-            Costumer::create(['person_id' => $person->id]);
+            Customer::create(['person_id' => $person->id]);
         });
         session()->flash('success', 'Cliente cadastrado com sucesso!');
-        return Inertia::location(route('costumers.index'));
+        return Inertia::location(route('customer.index'));
     }
 
-    public function edit(Costumer $costumer)
+    public function edit(Customer $customer)
     {
-        return Inertia::render('costumer/edit', [
+        return Inertia::render('customer/edit', [
             // [Correção 4]: Usa load() ao invés de buscar novamente
-            'costumer' => $costumer->load('person') 
+            'customer' => $customer->load('person') 
         ]);
     }
-    public function update(Costumer $costumer, Request $request)
+    public function update(Customer $customer, Request $request)
     {
         // [Correção 1]: Limpamos os dados ANTES de validar para que o 'unique' e o 'max/min' funcionem!
         $request->merge([
@@ -79,8 +79,8 @@ class CostumerController extends Controller
             [
                 'name' => 'required|min:3',
                 // [Correção 3]: Tamanhos ajustados para os dados limpos (11 e 14)
-                'cpf' => ['nullable', 'max:11', 'unique:person,cpf,' . $costumer->person_id, new DocumentRule('cpf')],
-                'cnpj' => ['nullable', 'max:14', 'unique:person,cnpj,' . $costumer->person_id, new DocumentRule('cnpj')],
+                'cpf' => ['nullable', 'max:11', 'unique:person,cpf,' . $customer->person_id, new DocumentRule('cpf')],
+                'cnpj' => ['nullable', 'max:14', 'unique:person,cnpj,' . $customer->person_id, new DocumentRule('cnpj')],
                 'birthdate' => 'required|date',
                 'email' => 'required|email',
                 'phone' => 'nullable|min:10'
@@ -88,26 +88,26 @@ class CostumerController extends Controller
             // ... (suas mensagens customizadas continuam iguais)
         );
         
-        DB::transaction(function () use ($costumer, $request) {
-            $person = Person::find($costumer->person_id);
+        DB::transaction(function () use ($customer, $request) {
+            $person = Person::find($customer->person_id);
             $person->update($request->all());
         });
         session()->flash('success', 'Cliente atualizado com sucesso!');
-        return Inertia::location(route('costumers.index'));
+        return Inertia::location(route('customer.index'));
     }
-    public function destroy(Costumer $costumer)
+    public function destroy(Customer $customer)
     {
-        DB::transaction(function () use ($costumer) {
-            $person = Person::find($costumer->person_id);
-            $address = Address::find($costumer->address_id);
+        DB::transaction(function () use ($customer) {
+            $person = Person::find($customer->person_id);
+            $address = Address::find($customer->address_id);
             if ($address) {
                 $address->delete();
             }
-            $costumer->delete();
+            $customer->delete();
             $person->delete();
         });
         session()->flash('success', 'Cliente excluído com sucesso!');
-        return Inertia::location(route('costumers.index'));
+        return Inertia::location(route('customer.index'));
     }
 
 }

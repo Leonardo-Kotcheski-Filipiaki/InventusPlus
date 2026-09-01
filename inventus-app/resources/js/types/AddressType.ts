@@ -1,4 +1,4 @@
-import type Costumer from "./Costumer";
+import type Costumer from "./Customer";
 
 // Type address
 export default interface AddressType {
