@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import customers from '@/routes/customers';
+import stocks from '@/routes/stocks';
 import Nav from '@/ui/MainNav.vue';
 </script>
 
@@ -58,7 +59,7 @@ import Nav from '@/ui/MainNav.vue';
                     </div>
                     <div class="flex items-center gap-3 mt-6 pt-4 border-t border-zinc-800">
                         <Link
-                            href="/stock"
+                            :href="stocks.index()"
                             class="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold rounded-lg border border-zinc-700 transition-colors"
                         >
                             Acessar Estoque

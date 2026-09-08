@@ -14,8 +14,9 @@ class StockController extends Controller
     {
         $stocks = Stock::with(['stockCategory', 'supplier'])->get();
         return Inertia::render("stock/index", [
-            'stocks' => $stocks ?? [],
-            'stock' => $stocks ?? []
+            'stock' => $stocks ?? [],
+            'categories' => StockCategory::all(),
+            'suppliers' => Supplier::all(),
         ]);
     }
 
