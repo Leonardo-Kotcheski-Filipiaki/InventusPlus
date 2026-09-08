@@ -4,6 +4,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\StockCategoryController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\SupplierController;
@@ -16,22 +17,20 @@ Route::post("/login", [UserController::class, 'authenticate'])->name("login.post
 Route::middleware('auth')->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('home');
     Route::get('/logout', [UserController::class, 'logout'])->name('logout');
-    
-
 
     Route::resource("customers", CustomerController::class);
     Route::resource("suppliers", SupplierController::class);
     Route::resource("stocks", StockController::class);
     Route::resource("stock-categories", StockCategoryController::class);
-    
+    Route::resource("sales", SalesController::class);
+
     Route::get("/address", [AddressController::class, "index"])->name("address.index");
     Route::get("/address/create/{id}", [AddressController::class, "create"])->name("address.create");
     Route::post("/address/store/{id}", [AddressController::class, "store"])->name("address.store");
     Route::get("/address/edit/{id}", [AddressController::class, "edit"])->name("address.edit");
     Route::patch("/address/update/{id}", [AddressController::class, "update"])->name("address.update");
     Route::get("/address/destroy/{id}", [AddressController::class, "destroy"])->name("address.destroy");
-
-
+    
     // Route::resource("suppliers", SupplierController::class);
     // Route::resource("products", ProductController::class);
     // Route::resource("sales", SaleController::class);

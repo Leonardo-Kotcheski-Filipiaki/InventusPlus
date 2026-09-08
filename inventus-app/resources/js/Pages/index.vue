@@ -2,7 +2,9 @@
 import { Head, Link } from '@inertiajs/vue3';
 import customers from '@/routes/customers';
 import stocks from '@/routes/stocks';
+import suppliers from '@/routes/suppliers';
 import Nav from '@/ui/MainNav.vue';
+import sales from '@/routes/sales';
 </script>
 
 <template>
@@ -19,7 +21,7 @@ import Nav from '@/ui/MainNav.vue';
 
             <!-- Quick Access Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Clientes Card -->
+                <!-- Customers Card -->
                 <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex flex-col justify-between">
                     <div>
                         <div class="w-10 h-10 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-sm mb-4">
@@ -37,11 +39,26 @@ import Nav from '@/ui/MainNav.vue';
                         >
                             Ver Clientes
                         </Link>
+                    </div>
+                </div>
+
+                <!-- Suppliers Card -->
+                <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-sm mb-4">
+                            FOR
+                        </div>
+                        <h2 class="text-lg font-semibold text-white">Fornecedores</h2>
+                        <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
+                            Cadastre, edite e consulte a listagem completa de fornecedores e seus documentos.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 mt-6 pt-4 border-t border-zinc-800">
                         <Link
-                            :href="customers.create()"
-                            class="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold rounded-lg border border-zinc-700 transition-colors"
+                            :href="suppliers.index()"
+                            class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors"
                         >
-                            + Novo Cliente
+                            Ver Fornecedores
                         </Link>
                     </div>
                 </div>
@@ -54,15 +71,36 @@ import Nav from '@/ui/MainNav.vue';
                         </div>
                         <h2 class="text-lg font-semibold text-white">Estoque</h2>
                         <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
-                            Controle a entrada e saída de produtos, fornecedores e níveis de estoque.
+                            Cadastre, edite e consulte os produtos do estoque.
                         </p>
                     </div>
                     <div class="flex items-center gap-3 mt-6 pt-4 border-t border-zinc-800">
                         <Link
                             :href="stocks.index()"
-                            class="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold rounded-lg border border-zinc-700 transition-colors"
+                            class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors"
                         >
                             Acessar Estoque
+                        </Link>
+                    </div>
+                </div>
+
+                <!-- In/Out Card -->
+                <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-15 h-10 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-sm mb-4">
+                            IN/OUT
+                        </div>
+                        <h2 class="text-lg font-semibold text-white">Vendas</h2>
+                        <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
+                            Cadastre, edite e consulte as vendas e compras.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 mt-6 pt-4 border-t border-zinc-800">
+                        <Link
+                            :href="sales.index()"
+                            class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors"
+                        >
+                            Acessar Vendas
                         </Link>
                     </div>
                 </div>
