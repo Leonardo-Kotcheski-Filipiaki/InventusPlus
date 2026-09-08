@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import customers from '@/routes/customers';
+import sales from '@/routes/sales';
 import stocks from '@/routes/stocks';
 import suppliers from '@/routes/suppliers';
 import Nav from '@/ui/MainNav.vue';
-import sales from '@/routes/sales';
 </script>
 
 <template>
@@ -90,9 +90,9 @@ import sales from '@/routes/sales';
                         <div class="w-15 h-10 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-sm mb-4">
                             IN/OUT
                         </div>
-                        <h2 class="text-lg font-semibold text-white">Vendas</h2>
+                        <h2 class="text-lg font-semibold text-white">Movimentações</h2>
                         <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
-                            Cadastre, edite e consulte as vendas e compras.
+                            Cadastre, edite e consulte as movimentações de saídas e entradas.
                         </p>
                     </div>
                     <div class="flex items-center gap-3 mt-6 pt-4 border-t border-zinc-800">
@@ -100,7 +100,7 @@ import sales from '@/routes/sales';
                             :href="sales.index()"
                             class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors"
                         >
-                            Acessar Vendas
+                            Acessar Movimentações
                         </Link>
                     </div>
                 </div>
