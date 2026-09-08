@@ -54,8 +54,8 @@ const submit = () => {
                 <div>
                     <h1 class="text-xl font-bold text-white tracking-tight">
                         Editar Endereço
-                        <span v-if="props.address.costumer?.person?.name">
-                            - {{ props.address.costumer.person.name }}
+                        <span v-if="props.address.customer?.name || props.address.costumer?.name">
+                            - {{ props.address.customer?.name ?? props.address.costumer?.name }}
                         </span>
                     </h1>
                     <p class="text-xs text-zinc-400 mt-0.5">Atualize as informações de localização</p>

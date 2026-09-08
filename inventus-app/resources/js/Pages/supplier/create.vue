@@ -1,30 +1,23 @@
 <script setup lang="ts">
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import address from '@/routes/address';
-import customers from '@/routes/customers';
-import type Customer from '@/types/Customer';
+import suppliers from '@/routes/suppliers';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
 
-const props = defineProps<{
-    customer: Customer;
-}>();
-
 const form = useForm({
-    name: props.customer.name || '',
-    cpf: props.customer.cpf || '',
-    cnpj: props.customer.cnpj || '',
-    email: props.customer.email || '',
-    phone: props.customer.phone || ''
+    name: '',
+    cpf: '',
+    cnpj: '',
+    email: '',
+    phone: ''
 });
 
 const showElement = ref(true);
 const page = usePage();
 
 const submit = () => {
-    form.patch(customers.update.url(props.customer.id), {
-        preserveState: true,
+    form.post(suppliers.store.url(), {
         onFinish: () => {
             if (page.props.flash?.warning || page.props.errors?.error) {
                 showElement.value = true;
@@ -38,17 +31,13 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Alterar Cliente - Inventus +" />
+    <Head title="Adicionar Fornecedor - Inventus +" />
     <div class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
         <Nav />
         <SubMenu :options="[
             {
-                label: 'Listar Clientes',
-                url: customers.index()
-            },
-            {
-                label: 'Novo Cliente',
-                url: customers.create()
+                label: 'Listar Fornecedores',
+                url: suppliers.index()
             }
         ]"/>
 
@@ -56,11 +45,11 @@ const submit = () => {
             <!-- Breadcrumbs / Top Bar -->
             <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h1 class="text-xl font-bold text-white tracking-tight">Editar Cliente</h1>
-                    <p class="text-xs text-zinc-400 mt-0.5">Atualize os dados de {{ form.name || 'cliente' }}</p>
+                    <h1 class="text-xl font-bold text-white tracking-tight">Cadastrar Novo Fornecedor</h1>
+                    <p class="text-xs text-zinc-400 mt-0.5">Preencha os dados do fornecedor</p>
                 </div>
                 <Link
-                    :href="customers.index()"
+                    :href="suppliers.index()"
                     class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold rounded-lg border border-zinc-700 transition-colors"
                 >
                     Voltar
@@ -158,7 +147,7 @@ const submit = () => {
                                 v-model="form.email"
                                 type="email"
                                 required
-                                placeholder="cliente@email.com"
+                                placeholder="fornecedor@email.com"
                                 class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
                             />
                             <span v-if="form.errors.email" class="block mt-1 text-xs text-rose-400">
@@ -168,32 +157,21 @@ const submit = () => {
                     </div>
 
                     <!-- Action buttons -->
-                    <div class="flex items-center justify-between pt-4 border-t border-zinc-800">
-                        <div>
-                            <Link
-                                :href="address.create(props.customer.id)"
-                                class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-semibold rounded-lg border border-zinc-700 transition-colors"
-                            >
-                                Adicionar Endereço
-                            </Link>
-                        </div>
-
-                        <div class="flex gap-3">
-                            <Link
-                                :href="customers.index()"
-                                class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-semibold rounded-lg border border-zinc-700 transition-colors"
-                            >
-                                Cancelar
-                            </Link>
-                            <button
-                                type="submit"
-                                :disabled="form.processing"
-                                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
-                            >
-                                <span v-if="form.processing">Atualizando...</span>
-                                <span v-else>Atualizar Cliente</span>
-                            </button>
-                        </div>
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-zinc-800">
+                        <Link
+                            :href="suppliers.index()"
+                            class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-semibold rounded-lg border border-zinc-700 transition-colors"
+                        >
+                            Cancelar
+                        </Link>
+                        <button
+                            type="submit"
+                            :disabled="form.processing"
+                            class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
+                        >
+                            <span v-if="form.processing">Salvando...</span>
+                            <span v-else>Salvar Fornecedor</span>
+                        </button>
                     </div>
                 </form>
             </div>

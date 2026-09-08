@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Nav from '@/ui/MainNav.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import costumers from '@/routes/costumers';
+import customers from '@/routes/customers';
+import Nav from '@/ui/MainNav.vue';
 </script>
 
 <template>
@@ -31,13 +31,13 @@ import costumers from '@/routes/costumers';
                     </div>
                     <div class="flex items-center gap-3 mt-6 pt-4 border-t border-zinc-800">
                         <Link
-                            :href="costumers.index()"
+                            :href="customers.index()"
                             class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors"
                         >
                             Ver Clientes
                         </Link>
                         <Link
-                            :href="costumers.create()"
+                            :href="customers.create()"
                             class="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold rounded-lg border border-zinc-700 transition-colors"
                         >
                             + Novo Cliente

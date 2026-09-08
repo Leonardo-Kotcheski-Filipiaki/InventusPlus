@@ -1,6 +1,6 @@
 import type AddressType from "./AddressType";
 
-export default interface Customer {
+export default interface Supplier {
     id: number;
     name: string;
     cpf: string | null;

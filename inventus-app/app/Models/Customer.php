@@ -2,30 +2,53 @@
 
 namespace App\Models;
 
-use Attribute;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int id
- * @property int person_id
- * @property int address_id
- * @property string created_at
- * @property string updated_at
+ * @property int $id
+ * @property string $name
+ * @property string|null $cpf
+ * @property string|null $cnpj
+ * @property string|null $email
+ * @property string|null $phone
+ * @property int|null $address_id
+ * @property string|null $created_at
+ * @property string|null $updated_at
  */
 #[Table('customer')]
-#[Fillable('person_id', 'address_id')]
+#[Fillable(['name', 'cpf', 'cnpj', 'email', 'phone', 'address_id'])]
 class Customer extends Model
 {
-    public function person() : HasOne
+    protected function cpf(): Attribute
     {
-        return $this->hasOne(Person::class, 'id', 'person_id');
+        return Attribute::make(
+            set: fn (?string $value) => $value ? preg_replace('/[^a-zA-Z0-9]/', '', $value) : null,
+            get: fn (?string $value) => $value ? preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $value) : null,
+        );
     }
 
-    public function address() : HasOne
+    protected function cnpj(): Attribute
     {
-        return $this->hasOne(Address::class, 'id', 'address_id');
+        return Attribute::make(
+            set: fn (?string $value) => $value ? preg_replace('/[^a-zA-Z0-9]/', '', $value) : null,
+            get: fn (?string $value) => $value ? preg_replace('/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/', '$1.$2.$3/$4-$5', $value) : null,
+        );
+    }
+
+    protected function phone(): Attribute
+    {
+        return Attribute::make(
+            set: fn (?string $value) => $value ? preg_replace('/[^a-zA-Z0-9]/', '', $value) : null,
+            get: fn (?string $value) => $value ? preg_replace('/(\d{2})(\d{4,5})(\d{4})/', '($1) $2-$3', $value) : null,
+        );
+    }
+
+    public function address(): BelongsTo
+    {
+        return $this->belongsTo(Address::class, 'address_id');
     }
 }

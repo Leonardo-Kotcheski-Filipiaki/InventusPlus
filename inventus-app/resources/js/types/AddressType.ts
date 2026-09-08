@@ -1,4 +1,5 @@
-import type Costumer from "./Customer";
+import type Customer from "./Customer";
+import type Supplier from "./Supplier";
 
 // Type address
 export default interface AddressType {
@@ -10,5 +11,7 @@ export default interface AddressType {
     neighborhood: string;
     city: string;
     state: string;
-    costumer?: Costumer;
+    customer?: Customer;
+    costumer?: Customer;
+    supplier?: Supplier;
 }

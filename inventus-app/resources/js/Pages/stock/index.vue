@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import stocks from '@/routes/stocks';
+import type Stock from '@/types/Stock';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
 
 const page = usePage();
 
-defineProps<{
-    products?: any[];
+const props = defineProps<{
+    stock: Stock[];
 }>();
 
 const show = ref(true);
@@ -17,6 +19,16 @@ if (page.props.flash?.success || page.props.flash?.error) {
         show.value = false;
     }, 4000);
 }
+
+const formatCurrency = (value: number | string) => {
+    const num = Number(value);
+
+    if (isNaN(num)) {
+        return 'R$ 0,00'
+    }
+
+    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+};
 </script>
 
 <template>
@@ -25,8 +37,12 @@ if (page.props.flash?.success || page.props.flash?.error) {
         <Nav />
         <SubMenu :options="[
             {
-                label: 'Novo Produto',
-                url: '/stock/create'
+                label: '+ Novo Produto',
+                url: stocks.create()
+            },
+            {
+                label: 'Categorias de Produtos',
+                url: '/stock-categories'
             }
         ]"/>
 
@@ -35,10 +51,10 @@ if (page.props.flash?.success || page.props.flash?.error) {
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                     <h1 class="text-xl font-bold text-white tracking-tight">Estoque</h1>
-                    <p class="text-xs text-zinc-400 mt-0.5">Gerenciamento de produtos e inventário</p>
+                    <p class="text-sm text-zinc-200 mt-0.5">Gerenciamento de produtos e inventário</p>
                 </div>
                 <Link
-                    href="/stock/create"
+                    :href="stocks.create()"
                     class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors"
                 >
                     <span>+</span>
@@ -75,44 +91,68 @@ if (page.props.flash?.success || page.props.flash?.error) {
             <div class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-sm">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-zinc-300">
-                        <thead class="bg-zinc-950/70 border-b border-zinc-800 text-xs uppercase tracking-wider text-zinc-400 font-semibold">
+                        <thead class="bg-zinc-950/70 border-b border-zinc-800 text-xs uppercase tracking-wider text-zinc-200 font-semibold">
                             <tr>
                                 <th class="py-3 px-4">Código</th>
                                 <th class="py-3 px-4">Produto</th>
+                                <th class="py-3 px-4">Categoria</th>
+                                <th class="py-3 px-4">Fornecedor</th>
                                 <th class="py-3 px-4 text-center">Quantidade</th>
                                 <th class="py-3 px-4">Valor Unitário</th>
                                 <th class="py-3 px-4 text-right">Ações</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-zinc-800/80 font-normal">
-                            <tr v-for="product in (products || [])" :key="product.id" class="hover:bg-zinc-800/50 transition-colors">
+                            <tr v-for="item in (props.stock || [])" :key="item.id" class="hover:bg-zinc-800/50 transition-colors">
                                 <td class="py-3.5 px-4 font-mono text-xs text-zinc-400">
-                                    {{ product.code || '—' }}
+                                    #{{ item.id }}
                                 </td>
-                                <td class="py-3.5 px-4 font-medium text-white">
-                                    {{ product.name }}
+                                <td class="py-3.5 px-4">
+                                    <div class="font-medium text-white">{{ item.name }}</div>
+                                    <div v-if="item.description" class="text-xs text-zinc-400 truncate max-w-xs mt-0.5">
+                                        {{ item.description }}
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span v-if="item.stock_category?.name" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-zinc-800 text-indigo-300 border border-zinc-700">
+                                        {{ item.stock_category.name }}
+                                    </span>
+                                    <span v-else class="text-zinc-600">—</span>
+                                </td>
+                                <td class="py-3.5 px-4 text-zinc-300">
+                                    {{ item.supplier?.name || '—' }}
                                 </td>
                                 <td class="py-3.5 px-4 text-center">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
-                                        {{ product.quantity || 0 }} un
+                                        {{ item.quantity || 0 }} un
                                     </span>
                                 </td>
-                                <td class="py-3.5 px-4 text-zinc-300">
-                                    {{ product.price ? `R$ ${product.price}` : '—' }}
+                                <td class="py-3.5 px-4 text-zinc-200 font-medium">
+                                    {{ formatCurrency(item.unit_value) }}
                                 </td>
                                 <td class="py-3.5 px-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <button class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 border border-zinc-700 text-zinc-200 hover:text-white text-xs font-medium rounded transition-colors">
+                                        <Link
+                                            v-if="item.id"
+                                            :href="stocks.edit(item.id)"
+                                            class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 border border-zinc-700 text-zinc-200 hover:text-white text-xs font-medium rounded transition-colors"
+                                        >
                                             Editar
-                                        </button>
-                                        <button class="px-2.5 py-1 bg-rose-950/40 hover:bg-rose-900/60 active:bg-rose-800/70 border border-rose-800/60 text-rose-300 hover:text-rose-100 text-xs font-medium rounded transition-colors">
+                                        </Link>
+                                        <Link
+                                            v-if="item.id"
+                                            :href="stocks.destroy(item.id)"
+                                            method="delete"
+                                            as="button"
+                                            class="px-2.5 py-1 bg-rose-950/40 hover:bg-rose-900/60 active:bg-rose-800/70 border border-rose-800/60 text-rose-300 hover:text-rose-100 text-xs font-medium rounded transition-colors cursor-pointer"
+                                        >
                                             Excluir
-                                        </button>
+                                        </Link>
                                     </div>
                                 </td>
                             </tr>
-                            <tr v-if="!products || products.length === 0">
-                                <td colspan="5" class="py-12 text-center text-zinc-500">
+                            <tr v-if="!(props.stock?.length)">
+                                <td colspan="7" class="py-12 text-center text-zinc-500">
                                     Nenhum produto cadastrado no estoque ainda.
                                 </td>
                             </tr>
@@ -123,4 +163,3 @@ if (page.props.flash?.success || page.props.flash?.error) {
         </main>
     </div>
 </template>
-

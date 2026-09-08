@@ -3,24 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
-use App\Models\Customer;
+use App\Models\Supplier;
 use App\Rules\DocumentRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class CustomerController extends Controller
+class SupplierController extends Controller
 {
     public function index()
-    {  
-        return Inertia::render('customer/index', [
-            'customer' => Customer::with('address')->get()
+    {
+        return Inertia::render('supplier/index', [
+            'supplier' => Supplier::with('address')->get()
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('customer/create');
+        return Inertia::render('supplier/create');
     }
 
     public function store(Request $request)
@@ -34,8 +34,8 @@ class CustomerController extends Controller
         $request->validate(
             [
                 'name' => 'required|min:3',
-                'cpf' => ['nullable', 'max:11', 'unique:customer,cpf', new DocumentRule('cpf')],
-                'cnpj' => ['nullable', 'max:14', 'unique:customer,cnpj', new DocumentRule('cnpj')],
+                'cpf' => ['nullable', 'max:11', 'unique:supplier,cpf', new DocumentRule('cpf')],
+                'cnpj' => ['nullable', 'max:14', 'unique:supplier,cnpj', new DocumentRule('cnpj')],
                 'email' => 'required|email',
                 'phone' => 'nullable|min:10'
             ],
@@ -52,20 +52,20 @@ class CustomerController extends Controller
             ]
         );
 
-        Customer::create($request->all());
+        Supplier::create($request->all());
 
-        session()->flash('success', 'Cliente cadastrado com sucesso!');
-        return redirect()->route('customers.index');
+        session()->flash('success', 'Fornecedor cadastrado com sucesso!');
+        return redirect()->route('suppliers.index');
     }
 
-    public function edit(Customer $customer)
+    public function edit(Supplier $supplier)
     {
-        return Inertia::render('customer/edit', [
-            'customer' => $customer->load('address') 
+        return Inertia::render('supplier/edit', [
+            'supplier' => $supplier->load('address')
         ]);
     }
 
-    public function update(Customer $customer, Request $request)
+    public function update(Request $request, Supplier $supplier)
     {
         $request->merge([
             'cpf' => $request->cpf ? preg_replace('/[^a-zA-Z0-9]/', '', $request->cpf) : null,
@@ -76,8 +76,8 @@ class CustomerController extends Controller
         $request->validate(
             [
                 'name' => 'required|min:3',
-                'cpf' => ['nullable', 'max:11', 'unique:customer,cpf,' . $customer->id, new DocumentRule('cpf')],
-                'cnpj' => ['nullable', 'max:14', 'unique:customer,cnpj,' . $customer->id, new DocumentRule('cnpj')],
+                'cpf' => ['nullable', 'max:11', 'unique:supplier,cpf,' . $supplier->id, new DocumentRule('cpf')],
+                'cnpj' => ['nullable', 'max:14', 'unique:supplier,cnpj,' . $supplier->id, new DocumentRule('cnpj')],
                 'email' => 'required|email',
                 'phone' => 'nullable|min:10'
             ],
@@ -93,24 +93,24 @@ class CustomerController extends Controller
                 'phone.min' => 'Telefone deve ter pelo menos 10 caracteres'
             ]
         );
-        
-        $customer->update($request->all());
 
-        session()->flash('success', 'Cliente atualizado com sucesso!');
-        return redirect()->route('customers.index');
+        $supplier->update($request->all());
+
+        session()->flash('success', 'Fornecedor atualizado com sucesso!');
+        return redirect()->route('suppliers.index');
     }
 
-    public function destroy(Customer $customer)
+    public function destroy(Supplier $supplier)
     {
-        DB::transaction(function () use ($customer) {
-            $address = Address::find($customer->address_id);
+        DB::transaction(function () use ($supplier) {
+            $address = Address::find($supplier->address_id);
             if ($address) {
                 $address->delete();
             }
-            $customer->delete();
+            $supplier->delete();
         });
 
-        session()->flash('success', 'Cliente excluído com sucesso!');
-        return redirect()->route('customers.index');
+        session()->flash('success', 'Fornecedor excluído com sucesso!');
+        return redirect()->route('suppliers.index');
     }
 }

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import type Costumer from '@/types/Customer';
+import address from '@/routes/address';
+import type Customer from '@/types/Customer';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
-import address from '@/routes/address';
 
 const form = useForm({
     zip_code: '',
@@ -20,15 +20,14 @@ const showElement = ref(true);
 const page = usePage();
 
 const props = defineProps<{
-    costumer: Costumer;
+    customer: Customer;
 }>();
 
 
 const submit = () => {
-    // Submit address logic
     form.transform((data) => ({
         ...data
-    })).post(address.store.url(props.costumer.id), {
+    })).post(address.store.url(props.customer.id), {
         onFinish: () => {
             if (page.props.flash?.warning || page.props.errors?.error) {
                 showElement.value = true;
@@ -55,7 +54,7 @@ const submit = () => {
         <main class="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
             <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h1 class="text-xl font-bold text-white tracking-tight">Cadastrar Endereço para cliente {{ props.costumer.person.name }}</h1>
+                    <h1 class="text-xl font-bold text-white tracking-tight">Cadastrar Endereço para cliente {{ props.customer.name }}</h1>
                     <p class="text-xs text-zinc-400 mt-0.5">Preencha os dados de localização</p>
                 </div>
                 <Link
@@ -104,7 +103,6 @@ const submit = () => {
                             <label for="number" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
                                 Número
                             </label>
-                            <!-- Only numbers permit, not E or any letter -->
                             <input
                                 id="number"
                                 v-model="form.number"

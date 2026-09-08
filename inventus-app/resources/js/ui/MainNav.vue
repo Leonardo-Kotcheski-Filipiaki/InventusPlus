@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import costumers from '@/routes/costumers';
 import { Link, usePage } from '@inertiajs/vue3';
+import customers from '@/routes/customers';
+import stocks from '@/routes/stocks';
+import suppliers from '@/routes/suppliers';
 
 const page = usePage();
 </script>
@@ -27,16 +29,25 @@ const page = usePage();
                 </li>
                 <li>
                     <Link
-                        :href="costumers.index()"
+                        :href="customers.index()"
                         class="px-3 py-1.5 rounded-md transition-colors hover:bg-zinc-800 hover:text-white"
-                        :class="page.url.startsWith('/costumers') ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400'"
+                        :class="page.url.startsWith('/customers') ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400'"
                     >
                         Clientes
                     </Link>
                 </li>
                 <li>
                     <Link
-                        href="/stock"
+                        :href="suppliers.index()"
+                        class="px-3 py-1.5 rounded-md transition-colors hover:bg-zinc-800 hover:text-white"
+                        :class="page.url.startsWith('/suppliers') ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400'"
+                    >
+                        Fornecedores
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        :href="stocks.index()"
                         class="px-3 py-1.5 rounded-md transition-colors hover:bg-zinc-800 hover:text-white"
                         :class="page.url.startsWith('/stock') ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400'"
                     >

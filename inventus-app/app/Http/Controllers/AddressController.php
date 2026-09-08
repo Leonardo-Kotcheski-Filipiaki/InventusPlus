@@ -10,11 +10,9 @@ use Inertia\Inertia;
 
 class AddressController extends Controller
 {
-    
     public function index()
     {
-        //Get costumer name that belongs to Person model
-        $addresses = Address::with("customer.person")->get();
+        $addresses = Address::with("customer")->get();
         return Inertia::render("address/index", [
             "addressArray" => $addresses ?? []
         ]);
@@ -22,10 +20,9 @@ class AddressController extends Controller
 
     public function create(int $id)
     {
-        //need an Customer object with person->name column and customer id
-        $customer = Customer::with('person:id,name')->find($id);
+        $customer = Customer::find($id);
         if ($customer == null) {
-            return redirect()->route("customer.edit", $id)->with("error", "Cliente não encontrado");
+            return redirect()->route("customers.edit", $id)->with("error", "Cliente não encontrado");
         }
         return Inertia::render('address/create', [
             'customer' => $customer
@@ -36,7 +33,7 @@ class AddressController extends Controller
     {
         $customer = Customer::find($id);
         if ($customer == null) {
-            return redirect()->route("customer.index")->with("error", "Cliente não encontrado");
+            return redirect()->route("customers.index")->with("error", "Cliente não encontrado");
         }
 
         $request->merge(['zip_code' => str_replace('-', '', $request->zip_code)]);
@@ -57,8 +54,8 @@ class AddressController extends Controller
             "city.required" => "Cidade é obrigatória",
             "state.required" => "Estado é obrigatório",
             "zip_code.required" => "CEP é obrigatório",
-            "zip_code.min"=>"CEP inválido",
-            "zip_code.max"=>"CEP inválido",
+            "zip_code.min" => "CEP inválido",
+            "zip_code.max" => "CEP inválido",
         ]);
 
         DB::transaction(function () use ($request, $customer) {
@@ -67,12 +64,12 @@ class AddressController extends Controller
             if (!$ok) {
                 DB::rollBack();
                 session()->flash("error", "Address not created");
-                return redirect()->route("customer.edit", $customer->id);
+                return redirect()->route("customers.edit", $customer->id);
             }
             DB::commit();
         });
 
-        return redirect()->route("customer.edit", $customer->id)->with("success", "Address created successfully");
+        return redirect()->route("customers.edit", $customer->id)->with("success", "Endereço cadastrado com sucesso");
     }
 
     public function edit(int $id) 
@@ -81,7 +78,7 @@ class AddressController extends Controller
         if ($address == null) {
             return redirect()->route("address.index")->with("error", "Endereço não encontrado");
         }
-        $address->customer = Customer::where('address_id', $address->id)->with('person:id,name')->first();
+        $address->customer = Customer::where('address_id', $address->id)->first();
 
         return Inertia::render("address/edit", [
             "address" => $address
@@ -113,13 +110,22 @@ class AddressController extends Controller
             "city.required" => "Cidade é obrigatória",
             "state.required" => "Estado é obrigatório",
             "zip_code.required" => "CEP é obrigatório",
-            "zip_code.min"=>"CEP inválido",
-            "zip_code.max"=>"CEP inválido",
+            "zip_code.min" => "CEP inválido",
+            "zip_code.max" => "CEP inválido",
         ]);
 
         $address->update($request->all());
 
         return redirect()->route("address.index")->with("success", "Endereço atualizado com sucesso");
     }
-}
 
+    public function destroy(int $id) 
+    {
+        $address = Address::find($id);
+        if ($address == null) {
+            return redirect()->route("address.index")->with("error", "Endereço não encontrado");
+        }
+        $address->delete();
+        return redirect()->route("address.index")->with("success", "Endereço deletado com sucesso");
+    }
+}

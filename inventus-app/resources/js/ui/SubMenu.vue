@@ -23,7 +23,6 @@ defineProps<{
                     :href="option.url"
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-md transition-colors"
                 >
-                    <span>+</span>
                     <span>{{ option.label }}</span>
                 </Link>
             </li>

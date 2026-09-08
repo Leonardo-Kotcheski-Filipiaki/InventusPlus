@@ -9,7 +9,6 @@ const form = useForm({
     name: '',
     cpf: '',
     cnpj: '',
-    birthdate: '',
     email: '',
     phone: ''
 });
@@ -121,33 +120,15 @@ const submit = () => {
                             </span>
                         </div>
 
-                        <!-- Data de Nascimento -->
-                        <div>
-                            <label for="birthdate" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
-                                Data de Nascimento <span class="text-indigo-400">*</span>
-                            </label>
-                            <input
-                                id="birthdate"
-                                v-model="form.birthdate"
-                                type="date"
-                                required
-                                class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors [color-scheme:dark]"
-                            />
-                            <span v-if="form.errors.birthdate" class="block mt-1 text-xs text-rose-400">
-                                {{ form.errors.birthdate }}
-                            </span>
-                        </div>
-
                         <!-- Telefone -->
                         <div>
                             <label for="phone" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
-                                Telefone <span class="text-indigo-400">*</span>
+                                Telefone
                             </label>
                             <input
                                 id="phone"
                                 v-model="form.phone"
                                 type="tel"
-                                required
                                 placeholder="(00) 00000-0000"
                                 class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
                             />
@@ -157,7 +138,7 @@ const submit = () => {
                         </div>
 
                         <!-- Email -->
-                        <div class="md:col-span-2">
+                        <div>
                             <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
                                 Email <span class="text-indigo-400">*</span>
                             </label>
@@ -197,4 +178,3 @@ const submit = () => {
         </main>
     </div>
 </template>
-

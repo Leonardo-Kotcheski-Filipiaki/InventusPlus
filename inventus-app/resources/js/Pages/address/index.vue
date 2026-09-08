@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import address from '@/routes/address';
+import customers from '@/routes/customers';
 import type AddressType from '@/types/AddressType';
 import Nav from '@/ui/MainNav.vue';
 import SubMenu from '@/ui/SubMenu.vue';
-import address from '@/routes/address';
-import customers from '@/routes/customers';
 
 const props = defineProps<{
     addressArray: AddressType[] | [];
@@ -48,18 +48,21 @@ const props = defineProps<{
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="addressArray in props.addressArray" :key="addressArray.id">
-                            <td class="py-2 text-sm">{{ addressArray.customer?.person?.name ?? 'Não vinculado' }}</td>
-                            <td class="py-2 text-sm">{{ addressArray.zip_code }}</td>
-                            <td class="py-2 text-sm">{{ addressArray.street }}</td>
-                            <td class="py-2 text-sm">{{ addressArray.number }}</td>
-                            <td class="py-2 text-sm">{{ addressArray.neighborhood }}</td>
-                            <td class="py-2 text-sm">{{ addressArray.complement }}</td>
-                            <td class="py-2 text-sm">{{ addressArray.city }}</td>
-                            <td class="py-2 text-sm">{{ addressArray.state }}</td>
+                        <tr v-for="addr in props.addressArray" :key="addr.id">
+                            <td class="py-2 text-sm">{{ addr.customer?.name ?? addr.costumer?.name ?? 'Não vinculado' }}</td>
+                            <td class="py-2 text-sm">{{ addr.zip_code }}</td>
+                            <td class="py-2 text-sm">{{ addr.street }}</td>
+                            <td class="py-2 text-sm">{{ addr.number }}</td>
+                            <td class="py-2 text-sm">{{ addr.neighborhood }}</td>
+                            <td class="py-2 text-sm">{{ addr.complement }}</td>
+                            <td class="py-2 text-sm">{{ addr.city }}</td>
+                            <td class="py-2 text-sm">{{ addr.state }}</td>
                             <td class="py-2 text-sm">
-                                <Link :href="address.edit.url(addressArray.id)" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 border border-zinc-700 text-zinc-200 hover:text-white text-xs font-medium rounded transition-colors">
+                                <Link :href="address.edit.url(addr.id)" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 border border-zinc-700 text-zinc-200 hover:text-white text-xs font-medium rounded transition-colors">
                                     Editar
+                                </Link>
+                                <Link :href="address.destroy.url(addr.id)" class="px-2.5 py-1 bg-rose-950/40 hover:bg-rose-900/60 active:bg-rose-800/70 border border-rose-800/60 text-rose-300 hover:text-rose-100 text-xs font-medium rounded transition-colors">
+                                    Excluir
                                 </Link>
                             </td>
                         </tr>
