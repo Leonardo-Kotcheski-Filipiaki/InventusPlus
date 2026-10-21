@@ -67,7 +67,7 @@ class AddressController extends Controller
                 return redirect()->route("customers.edit", $customer->id);
             }
             DB::commit();
-        });
+        }, 2);
 
         return redirect()->route("customers.edit", $customer->id)->with("success", "Endereço cadastrado com sucesso");
     }
@@ -87,36 +87,43 @@ class AddressController extends Controller
 
     public function update(Request $request, int $id)
     {
-        $address = Address::find($id);
-        if ($address == null) {
-            return redirect()->route("address.index")->with("error", "Endereço não encontrado");
+        try {
+            $address = Address::find($id);
+            if ($address == null) {
+                return redirect()->route("address.index")->with("error", "Endereço não encontrado");
+            }
+
+            $request->merge(['zip_code' => str_replace('-', '', $request->zip_code)]);
+            $request->merge(['zip_code' => substr($request->zip_code, 0, 5) . '-' . substr($request->zip_code, 5)]);
+
+            $request->validate([
+                "street" => "required", 
+                "number" => "required|integer",
+                "neighborhood" => "required",
+                "city" => "required", 
+                "state" => "required", 
+                "zip_code" => "required|string|min:7|max:9" 
+            ],[
+                "street.required" => "Rua é obrigatória",
+                "number.required" => "Número é obrigatório",
+                "neighborhood.required" => "Bairro é obrigatório",
+                "city.required" => "Cidade é obrigatória",
+                "state.required" => "Estado é obrigatório",
+                "zip_code.required" => "CEP é obrigatório",
+                "zip_code.min" => "CEP inválido",
+                "zip_code.max" => "CEP inválido",
+            ]);
+
+            DB::transaction(function () use ($request, $address) {
+                $address->update($request->all());
+                DB::commit();
+            }, 2);
+
+            return redirect()->route("address.index")->with("success", "Endereço atualizado com sucesso");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route("address.index")->with("error", "Erro ao atualizar endereço");
         }
-
-        $request->merge(['zip_code' => str_replace('-', '', $request->zip_code)]);
-        $request->merge(['zip_code' => substr($request->zip_code, 0, 5) . '-' . substr($request->zip_code, 5)]);
-
-        $request->validate([
-            "street" => "required", 
-            "number" => "required|integer",
-            "neighborhood" => "required",
-            "city" => "required", 
-            "state" => "required", 
-            "zip_code" => "required|string|min:7|max:9" 
-        ],
-        [
-            "street.required" => "Rua é obrigatória",
-            "number.required" => "Número é obrigatório",
-            "neighborhood.required" => "Bairro é obrigatório",
-            "city.required" => "Cidade é obrigatória",
-            "state.required" => "Estado é obrigatório",
-            "zip_code.required" => "CEP é obrigatório",
-            "zip_code.min" => "CEP inválido",
-            "zip_code.max" => "CEP inválido",
-        ]);
-
-        $address->update($request->all());
-
-        return redirect()->route("address.index")->with("success", "Endereço atualizado com sucesso");
     }
 
     public function destroy(int $id) 
