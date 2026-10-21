@@ -5,8 +5,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: inventus
-      MYSQL_USER: leonardo
-      MYSQL_PASSWORD: 15121512
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
     ports:
       - "3306:3306"
     volumes:
